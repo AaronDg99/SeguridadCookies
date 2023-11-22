@@ -6,28 +6,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['loginEmail'];
     $password = $_POST['loginPassword'];
 
-    // Hash de la contraseña (deberías usar password_hash() en un entorno de producción)
+    // Password hash (you should use password_hash() in a production environment)
     $hashedPassword = md5($password);
 
-    // Consulta para verificar el usuario y la contraseña
+    // Query to verify username and password
     $query = "SELECT * FROM users WHERE email = '$email' AND password = '$hashedPassword'";
     $result = $conexion->query($query);
 
     if ($result->num_rows == 1) {
         $_SESSION['user'] = $email;
 
-        // Configurar la cookie sin seguridad
+        // Set the cookie without security
         setcookie('user_insecure', $email, time() + (86400 * 30), "/");
         setcookie('password', $password, time() + (86400 * 30), '/');
 
 
         header('Location: home.php');
     } else {
-        // Usuario no autenticado, redirigir al formulario de inicio de sesión
+        // Unauthenticated user, redirect to login form
         header('Location: login.php');
     }
 } else {
-    // Redirigir si se intenta acceder directamente
+    // Redirect if trying to access directly
     header('Location: index.php');
 }
 ?>

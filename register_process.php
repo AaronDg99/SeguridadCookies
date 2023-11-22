@@ -5,21 +5,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['registerEmail'];
     $password = $_POST['registerPassword'];
 
-    // Hash de la contraseña (deberías usar password_hash() en un entorno de producción)
+    // Password hash (you should use password_hash() in a production environment)
     $hashedPassword = md5($password);
 
-    // Consulta para insertar un nuevo usuario
+    // Query to insert a new user
     $query = "INSERT INTO users (email, password) VALUES ('$email', '$hashedPassword')";
 
     if ($conexion->query($query) === TRUE) {
-        // Registro exitoso, redirigir al formulario de inicio de sesión
+        // Successful registration, redirect to login form
         header('Location: login.php');
     } else {
-        // Error en el registro, redirigir al formulario de registro
+        // Registration error, redirect to registration form
         header('Location: register.php');
     }
 } else {
-    // Redirigir si se intenta acceder directamente
+    // Redirect if trying to access directly
     header('Location: index.php');
 }
 ?>

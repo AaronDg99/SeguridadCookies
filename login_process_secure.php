@@ -6,41 +6,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = $_POST['loginEmail'];
     $password = $_POST['loginPassword'];
 
-    // Hash de la contraseña utilizando password_hash
+    // Password hashing using password_hash
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    // Consulta preparada para verificar el usuario y la contraseña
+    // Prepared query to verify username and password
     $query = "SELECT * FROM users WHERE email = ?";
     $stmt = $conexion->prepare($query);
-    $stmt->bind_param("s", $email); // "s" indica que es una cadena
+    $stmt->bind_param("s", $email); // "s" indicates that it is a string
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows == 1) {
         $row = $result->fetch_assoc();
         if (password_verify($password, $row['password'])) {
-            // Contraseña válida
+            //Valid password
             $_SESSION['user'] = $email;
 
-            // Regenerar el ID de sesión después de un inicio de sesión exitoso
+            // Regenerate session ID after successful login
             session_regenerate_id(true);
 
-            // Configurar la cookie de manera segura
+            // Set the cookie safely
             setcookie('user_insecure', $email, time() + (86400 * 30), "/", "", false, true);
 
-            // No almacenes contraseñas en cookies
+            // Do not store passwords in cookies
 
             header('Location: home.php');
         } else {
-            // Contraseña incorrecta
+            //Incorrect password
             header('Location: login.php');
         }
     } else {
-        // Usuario no autenticado, redirigir al formulario de inicio de sesión
+        // Unauthenticated user, redirect to login form
         header('Location: login.php');
     }
 } else {
-    // Redirigir si se intenta acceder directamente
+    //Redirect if trying to access directly
     header('Location: index.php');
 }
 ?>
